@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
+import { ZipcodeEntryComponent } from './main-page/zipcode-entry/zipcode-entry.component';
 import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import {RouterModule} from "@angular/router";
