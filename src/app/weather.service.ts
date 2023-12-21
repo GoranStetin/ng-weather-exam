@@ -1,12 +1,16 @@
-import {Injectable, Signal, signal} from '@angular/core';
-import {Observable} from 'rxjs';
+import { Injectable, Signal, signal } from '@angular/core';
+import { EMPTY, Observable, from } from 'rxjs';
+import { catchError, concatMap, filter, map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { CurrentConditions } from './current-conditions/current-conditions/current-conditions.type';
+import { ConditionsAndZip } from './shared/models/sharedTypes';
+import { Forecast } from './forecasts-list/forecast.type';
+import { LocationService } from './location.service';
+import { Action } from './shared/models/constants';
 
-import {HttpClient} from '@angular/common/http';
-import {CurrentConditions} from './current-conditions/current-conditions.type';
-import {ConditionsAndZip} from './conditions-and-zip.type';
-import {Forecast} from './forecasts-list/forecast.type';
-
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class WeatherService {
 
   static URL = 'http://api.openweathermap.org/data/2.5';
@@ -14,12 +18,34 @@ export class WeatherService {
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
   private currentConditions = signal<ConditionsAndZip[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private locationService: LocationService) {
+    this.locationService.locations$
+      .pipe(
+        filter(locationsActions => locationsActions && locationsActions.locations.length > 0),
+        map(locationsActions => {
+          if (locationsActions.action === Action.REMOVE_LOCATION && typeof locationsActions.locations === 'string') {
+            this.removeCurrentConditions(locationsActions.locations);
+            return EMPTY
+          } else {
+            return locationsActions.locations
+          }
+        }),
+        concatMap(locations => from(locations)),
+        concatMap(zipcode => this.addCurrentConditions(zipcode))
+      ).subscribe();
+  }
 
-  addCurrentConditions(zipcode: string): void {
-    // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
-    this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
-      .subscribe(data => this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}]));
+  addCurrentConditions(zipcode: string): Observable<CurrentConditions> {
+    return this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`).
+      pipe(
+        catchError(() => {
+          return EMPTY;
+        }),
+        tap(data => {
+          if (!this.currentConditions().some(condition => condition.zip === zipcode)) {
+            this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data }]);
+          }
+        }))
   }
 
   removeCurrentConditions(zipcode: string) {
