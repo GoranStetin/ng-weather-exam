@@ -2,11 +2,11 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { EMPTY, Observable, from } from 'rxjs';
 import { catchError, concatMap, filter, map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { CurrentConditions } from './current-conditions/current-conditions/current-conditions.type';
 import { ConditionsAndZip } from './shared/models/sharedTypes';
 import { Forecast } from './forecasts-list/forecast.type';
 import { LocationService } from './location.service';
 import { Action } from './shared/models/constants';
+import { CurrentConditions } from './shared/models/current-conditions.type';
 
 @Injectable({
   providedIn: 'root',

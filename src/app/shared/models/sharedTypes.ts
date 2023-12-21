@@ -1,4 +1,5 @@
-import {CurrentConditions} from '../../current-conditions/current-conditions/current-conditions.type';
+
+import { CurrentConditions } from 'app/shared/models/current-conditions.type';
 import { Action } from './constants';
 
 export interface ConditionsAndZip {
