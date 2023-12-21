@@ -1,14 +1,25 @@
-import { ModuleWithProviders }  from '@angular/core';
+import { ModuleWithProviders, NgModule }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {ForecastsListComponent} from "./forecasts-list/forecasts-list.component";
-import {MainPageComponent} from "./main-page/main-page.component";
 
 const appRoutes: Routes = [
   {
-    path: '', component: MainPageComponent
+    path: '', 
+    loadChildren: () => import('./main-page/main-page.module').then(m => m.MainPageModule),
+    pathMatch: 'full'
   },
   {
-    path: 'forecast/:zipcode', component: ForecastsListComponent
+    path: 'forecast/:zipcode',
+    loadChildren: () => import('./forecasts-list/forecast-module.module').then(m => m.ForecastModuleModule),
   }
 ];
-export const routing: ModuleWithProviders<any> = RouterModule.forRoot(appRoutes, {});
+
+@NgModule({
+  declarations: [],
+  imports: [RouterModule.forRoot(appRoutes)],
+  exports: [RouterModule]
+})
+
+export class AppRoutingModule {
+}
+
+
