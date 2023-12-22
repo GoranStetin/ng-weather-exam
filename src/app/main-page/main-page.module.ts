@@ -6,6 +6,7 @@ import { CurrentConditionsComponent } from './current-conditions/current-conditi
 import { CurrentConditionsContainerComponent } from './current-conditions/current-conditions-container.component';
 import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'app/shared/shared.module';
 
 
 export const routesMainPage: Routes = [
@@ -26,7 +27,8 @@ export const routesMainPage: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routesMainPage),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

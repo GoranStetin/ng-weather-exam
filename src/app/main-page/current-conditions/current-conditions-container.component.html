@@ -1,11 +1,9 @@
-<ng-container *ngIf="locations">
-    <div class="tab-container">
-        <div *ngFor="let location of locations" class="tab" (click)="selectTab(location)">
-            <span class="tab-label">{{location?.data?.name}} ({{location?.zip}})</span>
-            <span class="close" (click)="removeLocation(location.zip)">&times;</span>
-        </div>
-    </div>
-</ng-container>
+<app-tab-container *ngIf="locations">
+    <app-tab *ngFor="let location of locations" [data]="location" (onTabClosed)="removeLocation($event)"
+        (onTabSelected)="selectTab($event)">
+        <span>{{location?.data?.name}} ({{location?.zip}})</span>
+    </app-tab>
+</app-tab-container>
 
 <ng-container *ngIf="selectedLocation">
     <ng-container *ngTemplateOutlet="currentConditionsTemplate; context: {$implicit: selectedLocation}"></ng-container>

@@ -1,0 +1,25 @@
+/* U app-tab.component.css */
+.app-tab {
+  padding: 10px 40px 10px 20px;
+  cursor: pointer;
+  background-color: #bdcacf;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+  position: relative;
+  }
+  
+  .app-tab:hover {
+    background-color: #d0d0d0; /* Tamnija nijansa kada se pređe mišem */
+  }
+  
+  .app-tab .close {
+    position: absolute;
+    top: 0;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .app-tab.selected {
+    background-color: #cacaca; /* Još tamnija nijansa za selektovani tab */
+  }
+  

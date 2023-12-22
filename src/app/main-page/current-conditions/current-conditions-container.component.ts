@@ -46,13 +46,16 @@ export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeLocation(zip) {
-    this.locationService.removeLocation(zip);
-    if (this.locations.length === 0) {
-      this.selectedLocation = null;
-    } else if (this.selectedLocation.zip === zip) {
-      this.selectedLocation = this.locations[0];
-    }
+  removeLocation(event) {
+    if(event.zip) {
+      const zip = event.zip
+      this.locationService.removeLocation(zip);
+      if (this.locations.length === 0) {
+        this.selectedLocation = null;
+      } else if (this.selectedLocation.zip === zip) {
+        this.selectedLocation = this.locations[0];
+      }
+    }    
   }
 
   ngOnDestroy(): void {
