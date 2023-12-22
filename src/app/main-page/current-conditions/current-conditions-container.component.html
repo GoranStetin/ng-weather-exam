@@ -1,0 +1,14 @@
+<app-tab-container *ngIf="locations">
+    <app-tab *ngFor="let location of locations" [data]="location" (onTabClosed)="removeLocation($event)"
+        (onTabSelected)="selectTab($event)">
+        <span>{{location?.data?.name}} ({{location?.zip}})</span>
+    </app-tab>
+</app-tab-container>
+
+<ng-container *ngIf="selectedLocation">
+    <ng-container *ngTemplateOutlet="currentConditionsTemplate; context: {$implicit: selectedLocation}"></ng-container>
+</ng-container>
+
+<ng-template #currentConditionsTemplate let-location>
+    <app-current-conditions [location]="location" [weatherIcon]="weatherIcon"></app-current-conditions>
+</ng-template>

@@ -1,0 +1,5 @@
+
+<div (click)="onTabClicked()" [class.selected]="active" class="app-tab">
+    <ng-content></ng-content>
+    <span class="close" (click)="onCloseClicked()">&times;</span>
+</div>
