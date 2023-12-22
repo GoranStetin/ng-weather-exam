@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="location">
   <div class="well flex" >
     <div>
       <h3>{{location.data.name}} ({{location.zip}})</h3>
@@ -14,7 +14,7 @@
       </p>
     </div>
     <div>      
-      <img [src]="weatherService.getWeatherIcon(location.data.weather[0].id)">
+      <img [src]="weatherIcon">
     </div>
  </div>
 </div>

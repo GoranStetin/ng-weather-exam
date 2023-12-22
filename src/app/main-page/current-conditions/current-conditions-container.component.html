@@ -1,4 +1,4 @@
-<ng-container *ngIf="currentConditions$ | async as locations">
+<ng-container *ngIf="locations">
     <div class="tab-container">
         <div *ngFor="let location of locations" class="tab" (click)="selectTab(location)">
             <span class="tab-label">{{location?.data?.name}} ({{location?.zip}})</span>
@@ -7,6 +7,10 @@
     </div>
 </ng-container>
 
-<ng-template #selectedTab>
-    Save
+<ng-container *ngIf="selectedLocation">
+    <ng-container *ngTemplateOutlet="currentConditionsTemplate; context: {$implicit: selectedLocation}"></ng-container>
+</ng-container>
+
+<ng-template #currentConditionsTemplate let-location>
+    <app-current-conditions [location]="location" [weatherIcon]="weatherIcon"></app-current-conditions>
 </ng-template>
