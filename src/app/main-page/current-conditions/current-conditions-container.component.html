@@ -1,1 +1,12 @@
-<p>current-conditions-container works!</p>
+<ng-container *ngIf="currentConditions$ | async as locations">
+    <div class="tab-container">
+        <div *ngFor="let location of locations" class="tab" (click)="selectTab(location)">
+            <span class="tab-label">{{location?.data?.name}} ({{location?.zip}})</span>
+            <span class="close" (click)="removeLocation(location.zip)">&times;</span>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #selectedTab>
+    Save
+</ng-template>

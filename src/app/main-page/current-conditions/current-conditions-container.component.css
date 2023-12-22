@@ -1,0 +1,49 @@
+.tab-container {
+    display: flex;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Space between the tab container and the content below */
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    background-color: #617AA0;
+    margin-right: 8px;
+    border-radius: 16px;
+    padding: 6px 12px;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tab:hover {
+    background-color: #546a8b; /* Slightly darker on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Larger shadow for depth effect */
+}
+
+.tab-label {
+    margin-right: 10px;
+}
+
+.close {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    /* border-radius: 10px; */
+    /* background-color: white; */
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    opacity: 1;
+}
+
+.close:hover {
+    color: gray;
+}

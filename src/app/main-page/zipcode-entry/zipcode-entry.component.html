@@ -1,8 +1,13 @@
-<div class="well">
-  <h2>Enter a zipcode:</h2>
-  <input type="text" #zipcode placeholder="Zipcode" class="form-control">
-  <br>
-  <button class="btn btn-primary" (click)="addLocation(zipcode.value)" >
-    Add location
-  </button>
+<form [formGroup]="form">
+  <div class="well">
+    <h2>Enter a zipcode:</h2>
+    <input type="text" formControlName="postalCode" placeholder="Zipcode" class="form-control">
+    <br>
+    <button [disabled]="form.get('postalCode')?.errors?.usPostalCodeInvalid || form.get('postalCode')?.value == ''" class="btn btn-primary" (click)="addLocation(form.get('postalCode')?.value)">
+      Add location
+    </button>
+  </div>
+</form>
+<div *ngIf="form.get('postalCode')?.errors?.usPostalCodeInvalid">
+  Please enter a valid US postal code.
 </div>

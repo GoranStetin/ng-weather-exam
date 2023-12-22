@@ -1,11 +1,11 @@
-import { Injectable, Signal, signal } from '@angular/core';
-import { EMPTY, Observable, from } from 'rxjs';
-import { catchError, concatMap, filter, map, tap } from 'rxjs/operators';
+import { Injectable, Signal } from '@angular/core';
+import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ConditionsAndZip } from './shared/models/sharedTypes';
 import { Forecast } from './forecasts-list/forecast.type';
 import { LocationService } from './location.service';
-import { Action } from './shared/models/constants';
+import { LOCATIONS } from './shared/models/constants';
 import { CurrentConditions } from './shared/models/current-conditions.type';
 
 @Injectable({
@@ -16,50 +16,73 @@ export class WeatherService {
   static URL = 'http://api.openweathermap.org/data/2.5';
   static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
-  private currentConditions = signal<ConditionsAndZip[]>([]);
+
+  private currentConditionsSubject = new BehaviorSubject<ConditionsAndZip[]>([]);
+  currentConditions$ = this.currentConditionsSubject.asObservable();
 
   constructor(private http: HttpClient, private locationService: LocationService) {
-    this.locationService.locations$
-      .pipe(
-        filter(locationsActions => locationsActions && locationsActions.locations.length > 0),
-        map(locationsActions => {
-          if (locationsActions.action === Action.REMOVE_LOCATION && typeof locationsActions.locations === 'string') {
-            this.removeCurrentConditions(locationsActions.locations);
-            return EMPTY
-          } else {
-            return locationsActions.locations
-          }
-        }),
-        concatMap(locations => from(locations)),
-        concatMap(zipcode => this.addCurrentConditions(zipcode))
-      ).subscribe();
+    this.locationService.locations$.pipe(
+      switchMap(locations => {
+        // Dohvatanje trenutnih zip kodova
+        const currentZipcodes = this.currentConditionsSubject.getValue().map(cond => cond.zip);
+        // Mapiramo lokacije u niz Observable-a za dodavanje uslova
+        const addConditionsObservables = locations
+          .filter(zip => !currentZipcodes.includes(zip))
+          .map(zip => this.addCurrentConditions(zip));
+        // Mapiramo trenutne zip kodove u niz Observable-a za uklanjanje uslova
+        const removeConditionsObservables = currentZipcodes
+          .filter(zip => !locations.includes(zip))
+          .map(zip => of(this.removeCurrentConditions(zip)));
+
+        // Kombinujemo sve Observable-e u jedan koristeći forkJoin
+        // forkJoin će sačekati da se sve završe pre emitovanja
+        return forkJoin([...addConditionsObservables, ...removeConditionsObservables]);
+      })
+    ).subscribe();
+
   }
 
   addCurrentConditions(zipcode: string): Observable<CurrentConditions> {
     return this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`).
       pipe(
-        catchError(() => {
-          return EMPTY;
+        tap((conditions) => {
+          let currentConditions = this.currentConditionsSubject.getValue();
+          currentConditions = [...currentConditions, { zip: zipcode, data: conditions }];
+          this.setLocationToLocalStorage(zipcode);
+          this.currentConditionsSubject.next(currentConditions);
         }),
-        tap(data => {
-          if (!this.currentConditions().some(condition => condition.zip === zipcode)) {
-            this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data }]);
-          }
-        }))
+        catchError(error => {
+          console.error(`Error fetching conditions for ${zipcode}:`, error);
+          return of(null);
+        })
+      )
+  }
+
+  //set the new value to the local storage just in case there is no error in request
+  setLocationToLocalStorage(zipcode) {
+    const locString = localStorage.getItem(LOCATIONS);
+    let locations = JSON.parse(locString);
+    if (!locations) {
+        // Initialize locations as an empty array if it's null/undefined
+        locations = [];
+    }
+    if (!locations.includes(zipcode)) {
+        // Add the zipcode if it's not already in the array
+        locations.push(zipcode);
+        localStorage.setItem(LOCATIONS, JSON.stringify(locations));
+    }
+
   }
 
   removeCurrentConditions(zipcode: string) {
-    this.currentConditions.update(conditions => {
-      for (let i in conditions) {
-        if (conditions[i].zip == zipcode)
-          conditions.splice(+i, 1);
-      }
-      return conditions;
-    })
+    this.currentConditionsSubject.next(
+      this.currentConditionsSubject.getValue().filter(condition => condition.zip !== zipcode)
+    );
+
   }
 
   getCurrentConditions(): Signal<ConditionsAndZip[]> {
-    return this.currentConditions.asReadonly();
+    return
   }
 
   getForecast(zipcode: string): Observable<Forecast> {

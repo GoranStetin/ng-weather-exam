@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MainPageComponent } from './main-page.component';
 import { CurrentConditionsComponent } from './current-conditions/current-conditions/current-conditions.component';
 import { CurrentConditionsContainerComponent } from './current-conditions/current-conditions-container.component';
 import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 export const routesMainPage: Routes = [
@@ -25,6 +26,8 @@ export const routesMainPage: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routesMainPage),
-  ]
+    ReactiveFormsModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MainPageModule { }
