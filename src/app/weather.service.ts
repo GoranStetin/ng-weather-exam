@@ -20,7 +20,14 @@ export class WeatherService {
   private currentConditionsSubject = new BehaviorSubject<ConditionsAndZip[]>([]);
   currentConditions$ = this.currentConditionsSubject.asObservable();
 
+  private cacheDuration = 2 * 60 * 60 * 1000;
+  
+
   constructor(private http: HttpClient, private locationService: LocationService) {
+    this.locationService.locations$.subscribe(locations => {
+      this.loadCachedData(locations);
+    });
+    
     this.locationService.locations$.pipe(
       switchMap(locations => {
         // Dohvatanje trenutnih zip kodova
@@ -39,40 +46,102 @@ export class WeatherService {
         return forkJoin([...addConditionsObservables, ...removeConditionsObservables]);
       })
     ).subscribe();
-
   }
+
+  private loadCachedData(locations: string[]) {
+    const currentConditions: ConditionsAndZip[] = [];
+    locations.forEach(zipcode => {
+      const cachedConditions = this.getCachedCurrentConditions(zipcode);
+      if (cachedConditions) {
+        currentConditions.push({ zip: zipcode, data: cachedConditions });
+      }
+    });
+    // Emitujte podatke samo ako postoje keširani podaci
+    if (currentConditions.length > 0) {
+      this.currentConditionsSubject.next(currentConditions);
+    }
+  }
+
+  setCacheDuration(milliseconds: number) {
+    this.cacheDuration = milliseconds;
+  }
+
+  // Proverite da li postoji keširani odgovor za trenutne uslove
+  private getCachedCurrentConditions(zipcode: string): CurrentConditions | null {
+    const cacheKey = `current-conditions-${zipcode}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const entry = JSON.parse(cached);
+      const now = new Date().getTime();
+      if (now - entry.timestamp < this.cacheDuration) {
+        return entry.data;
+      } else {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+    return null;
+  }
+
+  // Keširajte odgovor za trenutne uslove
+  private cacheCurrentConditions(zipcode: string, data: CurrentConditions) {
+    const cacheKey = `current-conditions-${zipcode}`;
+    const cacheEntry = {
+      timestamp: new Date().getTime(),
+      data: data
+    };
+    localStorage.setItem(cacheKey, JSON.stringify(cacheEntry));
+  }
+ 
 
   addCurrentConditions(zipcode: string): Observable<CurrentConditions> {
-    return this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`).
-      pipe(
-        tap((conditions) => {
-          let currentConditions = this.currentConditionsSubject.getValue();
-          currentConditions = [...currentConditions, { zip: zipcode, data: conditions }];
-          this.setLocationToLocalStorage(zipcode);
-          this.currentConditionsSubject.next(currentConditions);
+    const cachedConditions = this.getCachedCurrentConditions(zipcode);
+    if (cachedConditions) {
+      return of(cachedConditions);
+    } else {
+      return this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
+        .pipe(
+          tap((conditions) => {
+            this.cacheCurrentConditions(zipcode, conditions);
+            let currentConditions = this.currentConditionsSubject.getValue();
+            currentConditions = [...currentConditions, { zip: zipcode, data: conditions }];
+            this.currentConditionsSubject.next(currentConditions);
+          }),
+          catchError(error => {
+            console.error(`Error fetching conditions for ${zipcode}:`, error);
+            return of(null);
+          })
+        );
+    }
+  }
+
+  getForecast(zipcode: string): Observable<Forecast> {
+    const cacheKey = `forecast-${zipcode}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const entry = JSON.parse(cached);
+      const now = new Date().getTime();
+      if (now - entry.timestamp < this.cacheDuration) {
+        return of(entry.data);
+      } else {
+        localStorage.removeItem(cacheKey);
+      }
+    }    
+    return this.http.get<Forecast>(`${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`)
+      .pipe(
+        tap((forecast) => {
+          const cacheEntry = {
+            timestamp: new Date().getTime(),
+            data: forecast
+          };
+          localStorage.setItem(cacheKey, JSON.stringify(cacheEntry));
         }),
         catchError(error => {
-          console.error(`Error fetching conditions for ${zipcode}:`, error);
+          console.error(`Error fetching forecast for ${zipcode}:`, error);
           return of(null);
         })
-      )
+      );
   }
 
-  //set the new value to the local storage just in case there is no error in request
-  setLocationToLocalStorage(zipcode) {
-    const locString = localStorage.getItem(LOCATIONS);
-    let locations = JSON.parse(locString);
-    if (!locations) {
-        // Initialize locations as an empty array if it's null/undefined
-        locations = [];
-    }
-    if (!locations.includes(zipcode)) {
-        // Add the zipcode if it's not already in the array
-        locations.push(zipcode);
-        localStorage.setItem(LOCATIONS, JSON.stringify(locations));
-    }
-
-  }
 
   removeCurrentConditions(zipcode: string) {
     this.currentConditionsSubject.next(
@@ -83,12 +152,6 @@ export class WeatherService {
 
   getCurrentConditions(): Signal<ConditionsAndZip[]> {
     return
-  }
-
-  getForecast(zipcode: string): Observable<Forecast> {
-    // Here we make a request to get the forecast data from the API. Note the use of backticks and an expression to insert the zipcode
-    return this.http.get<Forecast>(`${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`);
-
   }
 
   getWeatherIcon(id): string {

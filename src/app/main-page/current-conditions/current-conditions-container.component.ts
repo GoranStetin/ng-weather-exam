@@ -3,7 +3,7 @@ import { LocationService } from 'app/location.service';
 import { ConditionsAndZip } from 'app/shared/models/sharedTypes';
 import { WeatherService } from 'app/weather.service';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-current-conditions-container',
@@ -26,12 +26,16 @@ export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
   private _onDestroy = new Subject<void>();
 
   ngOnInit(): void {
+    this.takeCurrentConditions();
+  }
+
+  takeCurrentConditions() {
     this.currentConditions$.pipe(takeUntil(this._onDestroy)).subscribe(locations => {
       this.locations = locations;
-      if(!this.selectedLocation) {
+      if (!this.selectedLocation) {
         this.selectedLocation = locations[0];
+        if (this.selectedLocation) this.getWeatherIcon(this.selectedLocation);
       }
-      
     })
   }
 
@@ -47,15 +51,16 @@ export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
   }
 
   removeLocation(event) {
-    if(event.zip) {
+    if (event.zip) {
       const zip = event.zip
       this.locationService.removeLocation(zip);
       if (this.locations.length === 0) {
         this.selectedLocation = null;
       } else if (this.selectedLocation.zip === zip) {
         this.selectedLocation = this.locations[0];
+        if (this.selectedLocation) this.getWeatherIcon(this.selectedLocation);
       }
-    }    
+    }
   }
 
   ngOnDestroy(): void {

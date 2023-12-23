@@ -15,11 +15,14 @@ export class LocationService {
   locations$ = this.locationsSubject.asObservable();
 
   constructor() {
-    let locString = localStorage.getItem(LOCATIONS);
-    if (locString) {
-      this.locations = JSON.parse(locString);
-      this.locationsSubject.next(this.locations);
-    }      
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      if (key.startsWith("current-conditions-")) {
+        key = key.replace("current-conditions-", "");
+        this.locations.push(key);
+      }
+    }
+    this.locationsSubject.next(this.locations);
   }
 
   /* Add new location to the view */
@@ -30,9 +33,10 @@ export class LocationService {
     }
   }
 
-  removeLocation(zipcode: string) {    
-    this.locations = this.locations.filter(location => location !== zipcode);     
-    localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
-    this.locationsSubject.next(this.locations);    
+  removeLocation(zipcode: string) {
+    this.locations = this.locations.filter(location => location !== zipcode);
+    let localStorageItem = "current-conditions-" + zipcode;
+    localStorage.removeItem(localStorageItem)
+    this.locationsSubject.next(this.locations);
   }
 }
