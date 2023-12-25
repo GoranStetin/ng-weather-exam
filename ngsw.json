@@ -1,0 +1,100 @@
+{
+  "configVersion": 1,
+  "timestamp": 1703504293873,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/129.3117c227165f723a.js",
+        "/926.785a3fca3cddf8ad.js",
+        "/common.d8adf834ec3f1513.js",
+        "/favicon.ico",
+        "/index.html",
+        "/main.5f592ff0fa90f82b.js",
+        "/polyfills.4eb0e12b74077764.js",
+        "/runtime.fcb15ba9777daf16.js",
+        "/styles.62da56fab7c23777.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/weather.json"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "WeatherAPI",
+      "patterns": [
+        "http:\\/\\/api\\.openweathermap\\.org\\/data\\/.*"
+      ],
+      "strategy": "freshness",
+      "maxAge": 21600000,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/129.3117c227165f723a.js": "bbf6380b50cdb1de0e828f90e6348cb3492a4105",
+    "/926.785a3fca3cddf8ad.js": "6cbcebd20dc64624d5629b185a3de260d6589683",
+    "/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/assets/weather.json": "66917a0e0b291aa6498489fc9820dfaa3529ceb9",
+    "/common.d8adf834ec3f1513.js": "a3320005ca47af7f066ba7d5fc3c3ca7c3dd15b1",
+    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
+    "/index.html": "f845996de8b23f1f829f0f4aa114985700541a68",
+    "/main.5f592ff0fa90f82b.js": "248e4284fcadbbe7e93583f6578eccd747b0e1e3",
+    "/polyfills.4eb0e12b74077764.js": "76998cd515d460b2fa554a7cb3d9be556ebb7853",
+    "/runtime.fcb15ba9777daf16.js": "00dd4cd485c2ab6078b0723db6f45e60657d6fed",
+    "/styles.62da56fab7c23777.css": "c54110b93e86a53798e788d07bf736e419d2c9d8"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
