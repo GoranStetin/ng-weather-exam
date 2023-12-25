@@ -4,7 +4,6 @@ import { TabComponent } from './tab-container/tab/tab.component';
 import { TabContainerComponent } from './tab-container/tab-container.component';
 
 
-
 @NgModule({
   declarations: [],
   imports: [

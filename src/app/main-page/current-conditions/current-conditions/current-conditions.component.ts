@@ -1,5 +1,4 @@
-import {Component, Input, OnInit, inject} from '@angular/core';
-import {Router} from "@angular/router";
+import {Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-current-conditions',
@@ -14,13 +13,8 @@ export class CurrentConditionsComponent implements OnInit {
   /* Input weather icon */
   @Input() weatherIcon;
 
-  private router = inject(Router); 
-
   ngOnInit(): void {
     console.log(this.location)
   }
 
-  showForecast(zipcode : string){
-    this.router.navigate(['/forecast', zipcode])
-  }
 }
