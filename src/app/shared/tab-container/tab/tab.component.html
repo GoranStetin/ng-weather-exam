@@ -1,5 +1,6 @@
 
 <div (click)="onTabClicked()" [class.selected]="active" class="app-tab">
-    <ng-content></ng-content>
+    <!-- Display the title and subtitle of the item within each tab -->
+    <span>{{title.title}} ({{title?.subtitle}})</span>
     <span class="close" (click)="onCloseClicked()">&times;</span>
 </div>

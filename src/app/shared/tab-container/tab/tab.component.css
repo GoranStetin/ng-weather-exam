@@ -2,7 +2,7 @@
 .app-tab {
   padding: 10px 40px 10px 20px;
   cursor: pointer;
-  background-color: #bdcacf;
+  background-color: #cacaca;
   border-radius: 20px;
   transition: background-color 0.3s ease;
   position: relative;
@@ -20,6 +20,6 @@
   }
   
   .app-tab.selected {
-    background-color: #cacaca; /* Još tamnija nijansa za selektovani tab */
+    background-color:#bdcacf; /* Još tamnija nijansa za selektovani tab */
   }
   

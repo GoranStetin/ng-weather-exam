@@ -5,3 +5,9 @@ export interface ConditionsAndZip {
     zip: string;
     data: CurrentConditions;
 }
+
+export interface TabTitle {
+    title: string,
+    subtitle?: string
+    metadata?: string;
+}

@@ -1,12 +1,8 @@
 <!-- Conditionally render the app-tab-container if there are locations available -->
-<app-tab-container *ngIf="locations">
-    <!-- Iterate over each location and create a tab for it -->
-    <app-tab *ngFor="let location of locations" [data]="location" (onTabClosed)="removeLocation($event)"
-        (onTabSelected)="selectTab($event)">
-        <!-- Display the name and zip of the location within each tab -->
-        <span>{{location?.data?.name}} ({{location?.zip}})</span>
-    </app-tab>
-</app-tab-container>
+<ng-container *ngIf="locations">
+    <app-tab-container [titles]="tabsTitles" (onTabClosed)="removeLocation($event)" (onTabSelected)="selectTab($event)">
+    </app-tab-container>
+</ng-container>
 
 <!-- Conditionally render the contents inside ng-container if a location is selected -->
 <ng-container *ngIf="selectedLocation">
