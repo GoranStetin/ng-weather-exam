@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MainPageComponent } from './main-page.component';
@@ -21,7 +21,7 @@ export const routesMainPage: Routes = [
     CurrentConditionsComponent,
     MainPageComponent,
     CurrentConditionsContainerComponent,
-    ZipcodeEntryComponent  
+    ZipcodeEntryComponent
   ],
     
   imports: [
@@ -29,7 +29,6 @@ export const routesMainPage: Routes = [
     RouterModule.forChild(routesMainPage),
     ReactiveFormsModule,
     SharedModule
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  ] 
 })
 export class MainPageModule { }

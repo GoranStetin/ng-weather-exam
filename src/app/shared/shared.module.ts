@@ -5,11 +5,11 @@ import { TabContainerComponent } from './tab-container/tab-container.component';
 
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
+  declarations: [
     TabComponent,
-    TabContainerComponent
+    TabContainerComponent],
+  imports: [
+    CommonModule
   ],
   exports: [
     TabComponent,

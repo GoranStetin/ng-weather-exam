@@ -1,3 +1,6 @@
-<div class="app-tab-container">
-    <ng-content></ng-content>
+<div #tab class="app-tab-container" *ngIf="titles">
+    <!-- Iterate over each title and create a tab for it -->
+    <app-tab *ngFor="let title of titles" [title]="title" (onTabSelected)="selectTab($event)"
+        (onTabClosed)="onCloseClicked($event)">
+    </app-tab>
 </div>
