@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, TemplateRef, ViewChildren } from '@angular/core';
 import { LocationService } from 'app/location.service';
 import { ConditionsAndZip, TabTitle } from 'app/shared/models/sharedTypes';
 import { WeatherService } from 'app/weather.service';
@@ -10,10 +10,16 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './current-conditions-container.component.html',
   styleUrl: './current-conditions-container.component.css'
 })
-export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
+export class CurrentConditionsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChildren('tabContentTemplate') tabContentTemplatesQueryList: QueryList<TemplateRef<unknown>>;
+  tabContentTemplates: TemplateRef<unknown>[] = [];
 
   // Injection of WeatherService and LocationService.
-  constructor(private weatherService: WeatherService, private locationService: LocationService) { }
+  constructor(private weatherService: WeatherService,
+    private locationService: LocationService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   // Observable stream of current weather conditions.
   protected currentConditions$: Observable<ConditionsAndZip[]> = this.weatherService.currentConditions$;
@@ -32,9 +38,16 @@ export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
 
   protected tabsTitles: TabTitle[];
 
+  tabContexts = [];
+
   ngOnInit(): void {
     // Method called on component initialization.
     this.takeCurrentConditions();
+  }
+
+  ngAfterViewInit(): void {
+    this.tabContentTemplates = this.tabContentTemplatesQueryList.toArray();
+    this.cdr.detectChanges();
   }
 
   // Subscribes to the currentConditions$ Observable and updates component properties.
@@ -44,12 +57,18 @@ export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
       this.locations = locations;
       //make titles for tabs
       this.tabsTitles = this.makeTabsTitles(this.locations);
-      // If no location is selected, selects the first one and fetches its weather icon.      
-      if (!this.selectedLocation) {
-        this.selectedLocation = locations[0];
-        if (this.selectedLocation) this.getWeatherIcon(this.selectedLocation);
-      }
+      this.tabContexts = this.locations.map(location => ({
+        $implicit: location,
+        weatherIcon: this.setWeatherIcon(location.data.weather[0].id)
+      }));
     });
+  }
+
+  setWeatherIcon(weatherIconId): string {
+    if (weatherIconId) {
+      return this.weatherIcon = this.weatherService.getWeatherIcon(weatherIconId);
+    }
+    return '';
   }
 
   makeTabsTitles(locations: ConditionsAndZip[]): TabTitle[] {
@@ -59,37 +78,12 @@ export class CurrentConditionsContainerComponent implements OnInit, OnDestroy {
     }));
   }
 
-
-  // Method to select a location and update the weather icon.
-  selectTab(event: TabTitle) {
-    const zip = event.subtitle;
-    const location = this.locations.find(location => location.zip === zip);
-    if (location) {
-      this.selectedLocation = location;
-      this.getWeatherIcon(location);
-    }
-
-  }
-
-  // Retrieves the weather icon URL for a given location.
-  getWeatherIcon(location) {
-    if (location.data.weather[0].id) {
-      this.weatherIcon = this.weatherService.getWeatherIcon(location.data.weather[0].id);
-    }
-  }
-
   // Removes a location from the list when an event is triggered.
-  removeLocation(event) {
-    if (event.subtitle) {
-      const zip = event.subtitle;
+  removeLocation(event: number) {
+    let zip: string;
+    zip = this.tabContexts[event].$implicit.zip ?? '';
+    if (zip) {
       this.locationService.removeLocation(zip);
-      // Update the selected location if necessary.
-      if (this.locations.length === 0) {
-        this.selectedLocation = null;
-      } else if (this.selectedLocation.zip === zip) {
-        this.selectedLocation = this.locations[0];
-        if (this.selectedLocation) this.getWeatherIcon(this.selectedLocation);
-      }
     }
   }
 

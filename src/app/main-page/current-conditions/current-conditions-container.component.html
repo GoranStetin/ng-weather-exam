@@ -1,17 +1,13 @@
-<!-- Conditionally render the app-tab-container if there are locations available -->
-<ng-container *ngIf="locations">
-    <app-tab-container [titles]="tabsTitles" (onTabClosed)="removeLocation($event)" (onTabSelected)="selectTab($event)">
+
+<!-- current-conditions-container.component.html -->
+<ng-container *ngIf="locations.length">
+    <app-tab-container [titles]="tabsTitles" [contentTemplates]="tabContentTemplates" [tabContexts]="tabContexts" (onTabClosed)="removeLocation($event)">
     </app-tab-container>
 </ng-container>
 
-<!-- Conditionally render the contents inside ng-container if a location is selected -->
-<ng-container *ngIf="selectedLocation">
-    <!-- Use ngTemplateOutlet to render the currentConditionsTemplate with the context of the selectedLocation -->
-    <ng-container *ngTemplateOutlet="currentConditionsTemplate; context: {$implicit: selectedLocation}"></ng-container>
-</ng-container>
-
-<!-- Define a template for displaying the current conditions of a location -->
-<ng-template #currentConditionsTemplate let-location>
-    <!-- Pass the location and weatherIcon data to the app-current-conditions component -->
+<!-- Current contaner conditions definition -->
+<ng-template #tabContentTemplate let-location let-weatherIcon="weatherIcon" >
     <app-current-conditions [location]="location" [weatherIcon]="weatherIcon"></app-current-conditions>
 </ng-template>
+
+
