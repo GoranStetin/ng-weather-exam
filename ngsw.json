@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1703689040969,
+  "timestamp": 1703767384383,
   "index": "/ng-weather-exam/index.html",
   "assetGroups": [
     {
@@ -11,14 +11,14 @@
         "ignoreVary": true
       },
       "urls": [
-        "/ng-weather-exam/129.5cd3354ddd531461.js",
+        "/ng-weather-exam/129.40e2f9ebf7aa2168.js",
         "/ng-weather-exam/926.785a3fca3cddf8ad.js",
         "/ng-weather-exam/common.9854b7140894a2fc.js",
         "/ng-weather-exam/favicon.ico",
         "/ng-weather-exam/index.html",
-        "/ng-weather-exam/main.862613bf24930594.js",
+        "/ng-weather-exam/main.e20e80081bdf03e7.js",
         "/ng-weather-exam/polyfills.4eb0e12b74077764.js",
-        "/ng-weather-exam/runtime.9f894e5b203a81ed.js",
+        "/ng-weather-exam/runtime.6181d3c6e5203b12.js",
         "/ng-weather-exam/styles.62da56fab7c23777.css"
       ],
       "patterns": []
@@ -59,7 +59,7 @@
     }
   ],
   "hashTable": {
-    "/ng-weather-exam/129.5cd3354ddd531461.js": "8329740c79d12be5b7a433a4da761dda76847694",
+    "/ng-weather-exam/129.40e2f9ebf7aa2168.js": "3f222bf3685003e4908c3235fa6e2e92e77d69bb",
     "/ng-weather-exam/926.785a3fca3cddf8ad.js": "6cbcebd20dc64624d5629b185a3de260d6589683",
     "/ng-weather-exam/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
     "/ng-weather-exam/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
@@ -72,10 +72,10 @@
     "/ng-weather-exam/assets/weather.json": "66917a0e0b291aa6498489fc9820dfaa3529ceb9",
     "/ng-weather-exam/common.9854b7140894a2fc.js": "8b5be6addaac58e6f38012e9075efb1d69e51c5c",
     "/ng-weather-exam/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/ng-weather-exam/index.html": "e542b7f5a47700ca13352c987bb039a88482d1e5",
-    "/ng-weather-exam/main.862613bf24930594.js": "406526b3fc340f1cb07d4fde53ccd1e46d25a2e7",
+    "/ng-weather-exam/index.html": "3aad197bd59a8a51758f1dd42f57bff268c207e1",
+    "/ng-weather-exam/main.e20e80081bdf03e7.js": "721083c826b37bc8e62d86e1cf8e2d1f9c972cde",
     "/ng-weather-exam/polyfills.4eb0e12b74077764.js": "76998cd515d460b2fa554a7cb3d9be556ebb7853",
-    "/ng-weather-exam/runtime.9f894e5b203a81ed.js": "5c59e73c64a88ff875fd06d111dc61b90beeb639",
+    "/ng-weather-exam/runtime.6181d3c6e5203b12.js": "c66e48503b01339ac1945f5e728d7a5663592ee6",
     "/ng-weather-exam/styles.62da56fab7c23777.css": "c54110b93e86a53798e788d07bf736e419d2c9d8"
   },
   "navigationUrls": [
