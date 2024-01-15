@@ -1,7 +1,11 @@
 
 <!-- current-conditions-container.component.html -->
 <ng-container *ngIf="locations.length">
-    <app-tab-container [titles]="tabsTitles" [contentTemplates]="tabContentTemplates" [tabContexts]="tabContexts" (onTabClosed)="removeLocation($event)">
+    <app-tab-container
+            [titles]="tabsTitles"
+            [contentTemplates]="tabContentTemplates"
+            [tabContexts]="tabContexts"
+            (onTabClosed)="removeLocation($event)">
     </app-tab-container>
 </ng-container>
 
